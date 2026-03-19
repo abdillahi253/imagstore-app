@@ -30,5 +30,5 @@ COPY --from=Builder /usr/src/app/backend ./
 # Install backend dependencies
 RUN npm install --production
 
-EXPOSE 5000
+EXPOSE 5050
 CMD [ "node", "index.js" ]

@@ -1,0 +1,43 @@
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Build l'image
+        run: docker build -t imagstore-app:latest .
+      - name: Exécuter les tests
+        run: docker run imagstore-app npm test
+      - name: Pousser l'image sur Docker hub
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build l'image
+        run: docker build -t imagstore-app:latest .
+      - name: Exécuter les tests
+        run: docker run imagstore-app npm test
+      - name: Pousser l'image sur Docker hub
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          docker tag imagstore-app:latest $DOCKER_USERNAME/imagestore-app:latest
+          docker push $DOCKER_USERNAME/imagestore-app:latest
+        env:
+          DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME}}
+          DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD}}
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Déployer sur le serveur de production
+        run: |
+          ssh user@production-server "docker pull $DOCKER_USERNAME/imagstore-app:latest && docker stop imagstore-app || true && docker rm imagstore-app || true && docker run -d --name imagstore-app -p 80:5050 $DOCKER_USERNAME/imagstore-app:latest"
+        env:
+          DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME}}

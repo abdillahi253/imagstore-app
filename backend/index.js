@@ -17,7 +17,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/photos', photoRoutes);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-const PORT = process.env.PORT || 5050;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Backend running on port ${PORT}`);
 });

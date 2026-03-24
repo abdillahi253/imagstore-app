@@ -1,0 +1,35 @@
+replicaCount: 1
+
+namespace: imagstore-dev
+
+image:
+  repository:
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30080
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+ingress:
+  enabled: false
+
+serviceAccount:
+  create: false
+  name: dmCluster-sa
+
+labels:
+  app: dmCluster
+  env: dev
+
+Description:
+  "This is the Helm chart for the dmCluster component of the imagstore application. It defines the deployment and service configurations for the dmCluster, which is responsible for managing the data management cluster in the imagstore application. The chart includes settings for replica count, image repository and tag, service type and port, and ingress configuration. The namespace is set to "imagstore-dev" for development purposes.

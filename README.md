@@ -78,3 +78,4 @@ backend/    # API Node.js/Express + PostgreSQL
 ---
 
 Projet pédagogique inspiré de Google Photos.
+Made by Abdink
